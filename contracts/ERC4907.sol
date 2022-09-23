@@ -89,4 +89,8 @@ import "./interfaces/IERC4907.sol";
             emit UpdateUser(tokenId, address(0),0, addresses, splits);
         }
     }
+
+    function mint(address to, uint256 tokenId) public virtual{
+        _mint(to, tokenId);
+    }
 } 

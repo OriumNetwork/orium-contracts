@@ -29,9 +29,11 @@ contract Rewarder is Pausable, AccessControl {
     _setupRole(OPERATOR_ROLE, operator_);
   }
 
-  function rewardUsers(uint256[] calldata tokenIds, uint256  amount) external onlyRole(OPERATOR_ROLE) {
+  function rewardUsers(uint256[] calldata tokenIds, uint256[] calldata  amounts) external onlyRole(OPERATOR_ROLE) {
+    require(tokenIds.length == amounts.length, "Rewarder: tokenIds and amounts length mismatch");
       for (uint256 i; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
+        uint256 amount = amounts[i];
         uint256[] memory splits = nft.splitOf(tokenId);
         address[] memory parties = nft.partiesOf(tokenId);
         platformClaim(tokenId, amount,  parties, splits);
@@ -47,13 +49,14 @@ contract Rewarder is Pausable, AccessControl {
             uint256 split = splits[i];
             uint256 tokensToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, tokensToTransfer);
+            require(ERC165Checker.supportsInterface(to, type(IOrium).interfaceId), "Rewarder: party does not support IOrium");
             if (ERC165Checker.supportsInterface(to, type(IOrium).interfaceId)) {
               IOrium(to).onTokenClaimed(tokenId, address(nft) ,tokensToTransfer);
             }
         }
     }
 
-    function calculateClaim(uint256 amount, uint256 split) internal returns (uint256) {
+    function calculateClaim(uint256 amount, uint256 split) internal pure returns (uint256) {
         return amount * split / 100;
     }
 }
