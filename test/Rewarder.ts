@@ -59,5 +59,22 @@ describe("Rewarder", function () {
       await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
       expect((await orium.counter()).toString()).to.equal("1");
     });
+    it("Should lend a nft and split value between contracts", async function () {
+      const tokenId = 1;
+      const parties = [orium.address, orium.address];
+      const split = [60, 40];
+      await nft.connect(owner).mint(player1.address, tokenId);
+      await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
+      await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
+      expect((await orium.counter()).toString()).to.equal("2");
+    });
+    it("Should lend a nft and split value between non-Contracts", async function () {
+      const tokenId = 1;
+      const parties = [nonContractParty.address, nonContractParty.address];
+      const split = [60, 40];
+      await nft.connect(owner).mint(player1.address, tokenId);
+      await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
+      await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
+    });
   });
 });
