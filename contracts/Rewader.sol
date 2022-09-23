@@ -49,7 +49,6 @@ contract Rewarder is Pausable, AccessControl {
             uint256 split = splits[i];
             uint256 tokensToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, tokensToTransfer);
-            require(ERC165Checker.supportsInterface(to, type(IOrium).interfaceId), "Rewarder: party does not support IOrium");
             if (ERC165Checker.supportsInterface(to, type(IOrium).interfaceId)) {
               IOrium(to).onTokenClaimed(tokenId, address(nft) ,tokensToTransfer);
             }

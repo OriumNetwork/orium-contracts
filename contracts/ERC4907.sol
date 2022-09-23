@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./interfaces/IERC4907.sol";
 
- contract ERC4907 is ERC721 {
+  contract ERC4907 is ERC721{
     struct UserInfo 
     {
         address user;   // address of user role

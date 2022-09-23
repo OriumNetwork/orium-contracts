@@ -52,7 +52,7 @@ describe("Rewarder", function () {
   describe("Deployment", function () {
     it("Should lend a nft and split value between contract and non contract", async function () {
       const tokenId = 1;
-      const parties = [orium.address, orium.address];
+      const parties = [orium.address, nonContractParty.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
