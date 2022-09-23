@@ -21,7 +21,7 @@ contract Rewarder is Pausable, AccessControl {
     require(rewardToken_ != address(0), "Rewarder: rewardToken is the zero address");
     require(nft_ != address(0), "Rewarder: nft is the zero address");
 
-    rewardToken = rewardToken_;
+    rewardToken = IERC20(rewardToken_);
     nft = IERC4907(nft_);
 
     _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -29,17 +29,17 @@ contract Rewarder is Pausable, AccessControl {
     _setupRole(OPERATOR_ROLE, operator_);
   }
 
-  function rewardUsers(uint256[] calldata tokenIds, uint256[] calldata amount) external onlyRole(OPERATOR_ROLE) {
+  function rewardUsers(uint256[] calldata tokenIds, uint256  amount) external onlyRole(OPERATOR_ROLE) {
       for (uint256 i; i < tokenIds.length; i++) {
-        address tokenId = tokenIds[i];
+        uint256 tokenId = tokenIds[i];
         uint256[] memory splits = nft.splitOf(tokenId);
-        address[] memory parties = nft.parties(tokenId);
-        this.platformClaim(tokenId, amount, splits, parties);
+        address[] memory parties = nft.partiesOf(tokenId);
+        platformClaim(tokenId, amount,  parties, splits);
       }
     }
 
     // Token Distribution
-    function platformClaim(uint256 tokenId, uint256 amount, address[] calldata parties, uint256[] calldata splits) internal {
+    function platformClaim(uint256 tokenId, uint256 amount, address[] memory parties, uint256[] memory splits) internal {
         require(parties.length == splits.length, "Rewarder: parties and splits length mismatch");
        
         for (uint256 i; i < parties.length; i++) {
@@ -48,7 +48,7 @@ contract Rewarder is Pausable, AccessControl {
             uint256 tokensToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, tokensToTransfer);
             if (ERC165Checker.supportsInterface(to, type(IOrium).interfaceId)) {
-              IOrium(party).onTokenClaimed(tokenId, tokenAddress ,tokensToTransfer);
+              IOrium(to).onTokenClaimed(tokenId, address(nft) ,tokensToTransfer);
             }
         }
     }
