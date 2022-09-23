@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/security/Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import './interfaces/IERC4907.sol';
-import './interfaces/IOrium.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
+import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
+import  { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
+import { IERC4907 } from './interfaces/IERC4907.sol';
+import { IRewardsReceiver } from './interfaces/IRewardsReceiver.sol';
+import  { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import  { ERC165Checker } from '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
 
 contract Rewarder is Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -14,8 +14,6 @@ contract Rewarder is Pausable, AccessControl {
 
   IERC20 public rewardToken;
   IERC4907 public nft;
-
-  uint256 public counterOriumCalls;
 
   constructor(address operator_, address rewardToken_, address nft_)   {
     require(operator_ != address(0), "Rewarder: operator is the zero address");
@@ -50,9 +48,8 @@ contract Rewarder is Pausable, AccessControl {
             uint256 split = splits[i];
             uint256 tokensToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, tokensToTransfer);
-            if (ERC165Checker.supportsInterface(to, type(IOrium).interfaceId)) {
-              counterOriumCalls++;
-              IOrium(to).onTokenClaimed(tokenId, address(nft) ,tokensToTransfer);
+            if (ERC165Checker.supportsInterface(to, type(IRewardsReceiver).interfaceId)) {
+              IRewardsReceiver(to).onTokenGeneratingEvent(tokenId, address(nft) ,tokensToTransfer);
             }
         }
     }

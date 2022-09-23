@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "./interfaces/IERC4907.sol";
+import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import { IERC4907 } from "./interfaces/IERC4907.sol";
 
   contract ERC4907 is ERC721{
     struct UserInfo 

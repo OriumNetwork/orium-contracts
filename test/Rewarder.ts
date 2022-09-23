@@ -17,8 +17,8 @@ describe("Rewarder", function () {
   let RewardToken: ContractFactory;
   let rewardToken: Contract;
 
-  let Orium: ContractFactory;
-  let orium: Contract;
+  let RewardsReceiver: ContractFactory;
+  let rewardsReceiver: Contract;
 
   let Nft: ContractFactory;
   let nft: Contract;
@@ -41,9 +41,9 @@ describe("Rewarder", function () {
     rewarder = await Rewarder.deploy(owner.address, rewardToken.address, nft.address);
     await rewarder.deployed();
 
-    Orium = await ethers.getContractFactory("Orium");
-    orium = await Orium.deploy();
-    await orium.deployed();
+    RewardsReceiver = await ethers.getContractFactory("RewardsReceiver");
+    rewardsReceiver = await RewardsReceiver.deploy();
+    await rewardsReceiver.deployed();
 
     await rewardToken.connect(owner).transfer(rewarder.address, toWei("1000"));
 
@@ -52,23 +52,19 @@ describe("Rewarder", function () {
   describe("Deployment", function () {
     it("Should lend a nft and split value between contract and non contract", async function () {
       const tokenId = 1;
-      const parties = [orium.address, nonContractParty.address];
+      const parties = [rewardsReceiver.address, nonContractParty.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
-      await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
-      expect((await orium.counter()).toString()).to.equal("1");
-      expect((await rewarder.counterOriumCalls()).toString()).to.equal("1");
+      await expect(rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
     it("Should lend a nft and split value between contracts", async function () {
       const tokenId = 1;
-      const parties = [orium.address, orium.address];
+      const parties = [rewardsReceiver.address, rewardsReceiver.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
-      await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
-      expect((await orium.counter()).toString()).to.equal("2");
-      expect((await rewarder.counterOriumCalls()).toString()).to.equal("2");
+      await expect(rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
     it("Should lend a nft and split value between non-Contracts", async function () {
       const tokenId = 1;
@@ -76,8 +72,7 @@ describe("Rewarder", function () {
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
-      await rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")]);
-      expect((await rewarder.counterOriumCalls()).toString()).to.equal("0");
+      await expect(rewarder.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
   });
 });
