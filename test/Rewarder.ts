@@ -33,7 +33,7 @@ describe("RewardDistributor", function () {
     rewardToken = await RewardToken.deploy(owner.address);
     await rewardToken.deployed();
 
-    Nft = await ethers.getContractFactory("ERC4907");
+    Nft = await ethers.getContractFactory("ERC4907ShareProfit");
     nft = await Nft.deploy("Test NFT", "TNFT");
     await nft.deployed();
 
@@ -55,7 +55,7 @@ describe("RewardDistributor", function () {
       const parties = [rewardReceiver.address, nonContractParty.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
-      await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
+      await nft.connect(player1).setUserShareProfit(tokenId, nftUser.address, ONE_DAY, parties, split);
       await expect(rewardDistributor.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
     it("Should lend a nft and split value between contracts", async function () {
@@ -63,7 +63,7 @@ describe("RewardDistributor", function () {
       const parties = [rewardReceiver.address, rewardReceiver.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
-      await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
+      await nft.connect(player1).setUserShareProfit(tokenId, nftUser.address, ONE_DAY, parties, split);
       await expect(rewardDistributor.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
     it("Should lend a nft and split value between non-Contracts", async function () {
@@ -71,7 +71,7 @@ describe("RewardDistributor", function () {
       const parties = [nonContractParty.address, nonContractParty.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
-      await nft.connect(player1).setUser(tokenId, nftUser.address, ONE_DAY, parties, split);
+      await nft.connect(player1).setUserShareProfit(tokenId, nftUser.address, ONE_DAY, parties, split);
       await expect(rewardDistributor.connect(owner).rewardUsers([tokenId], [toWei("100")])).to.not.be.reverted;
     });
   });
