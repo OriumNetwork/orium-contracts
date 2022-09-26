@@ -9,7 +9,7 @@ import  { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol
 contract RewardToken is ERC20, ERC20Burnable, Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
-  constructor(address owner) ERC20("Governance Token", "GT") {
+  constructor(address owner) ERC20("Reward Token", "RT") {
     require(owner != address(0), "RewardToken: owner is the zero address");
     _setupRole(DEFAULT_ADMIN_ROLE, owner);
     _setupRole(PAUSER_ROLE, owner);

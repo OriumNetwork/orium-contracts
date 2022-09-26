@@ -4,69 +4,61 @@ pragma solidity ^0.8.9;
 import { ERC4907 } from "./ERC4907.sol";
 import { IERC4907ShareProfit } from "./interfaces/IERC4907ShareProfit.sol";
 
-  contract ERC4907ShareProfit is ERC4907, IERC4907ShareProfit{
+  contract ERC4907ShareProfit is ERC4907{
     
-    struct UserInfo 
+    struct ShareProfitInfo 
     {
-        address user;   // address of user role
-        uint64 expires; // unix timestamp, user expires
-        address[] parties; // array of parties
-        uint256[] split; // array of split
+        address[] parties; // address of parties
+        uint256[] split;   // split of parties
     }
 
+    mapping (uint256  => ShareProfitInfo) internal _profits;
 
-    // Logged when the user of an NFT is changed or expires is changed
-    /// @notice Emitted when the `user` of an NFT or the `expires` of the `user` is changed
-    /// The zero address for user indicates that there is no user address
-    event UpdateUser(uint256 indexed tokenId, address indexed user, uint64 expires, address[] parties, uint256[] split);
+    /// @notice Emited when the profit of an NFT is updated
+    /// @dev parties and split neeed to be the same length
+    /// @param tokenId The NFT to update the profit for
+    /// @param parties The parties to split the profit
+    /// @param split The split of the profit
+    event UpdateShareProfit(uint256 indexed tokenId, address[] parties, uint256[] split);
 
     constructor(string memory name_, string memory symbol_) ERC4907(name_, symbol_){
      
      }
-    
-    /// @notice set the user and expires of an NFT
+     /// @notice set the user and expires of an NFT
     /// @dev The zero address indicates there is no user
     /// Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
-    function setUser(uint256 tokenId, address user, uint64 expires, address[] calldata parties, uint256[] calldata split) public virtual override{
-        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC4907: transfer caller is not owner nor approved");
+    function setUser(uint256 tokenId, address user, uint64 expires) public virtual override{
+        address[] memory parties_ = new address[](1);
+        uint256[] memory split_ = new uint256[](1);
+        parties_[0] = user;
+        split_[0] = 1;
+        setUserShareProfit(tokenId,user,expires,  parties_ , split_);
+    }
+
+    /// @notice set the user and expires of an NFT
+    /// @dev The zero address indicates there is no user
+    /// Throws if `tokenId` is not valid NFT
+    //  @param tokenId  The NFT to update the profit for
+    /// @param user  The new user of the NFT
+    /// @param expires  UNIX timestamp, The new user could use the NFT before expires
+    /// @param parties The parties to split the profit
+    /// @param split The split of the profit
+    function setUserShareProfit(uint256 tokenId, address user, uint64 expires, address[] memory parties, uint256[] memory split) public virtual {
         require(parties.length == split.length, "ERC4907: parties and split must be the same length");
-        UserInfo storage info =  _users[tokenId];
-        info.user = user;
-        info.expires = expires;
-        info.parties = parties;
-        info.split = split;
-        emit UpdateUser(tokenId, user, expires, parties, split);
+        super.setUser(tokenId, user, expires);
+        _profits[tokenId].parties = parties;
+        _profits[tokenId].split = split;
+        emit UpdateShareProfit(tokenId, parties, split);
     }
 
-    /// @notice Get the user address of an NFT
-    /// @dev The zero address indicates that there is no user or the user is expired
-    /// @param tokenId The NFT to get the user address for
-    /// @return The user address for this NFT
-    function userOf(uint256 tokenId) public view virtual returns(address){
-        if( uint256(_users[tokenId].expires) >=  block.timestamp){
-            return  _users[tokenId].user;
-        }
-        else{
-            return address(0);
-        }
+    function partiesOf(uint256 tokenId) public view virtual returns(address[] memory){
+        return _profits[tokenId].parties;
     }
 
-    /// @notice Get the user expires of an NFT
-    /// @dev The zero value indicates that there is no user
-    /// @param tokenId The NFT to get the user expires for
-    /// @return The user expires for this NFT
-    function userExpires(uint256 tokenId) public view virtual override returns(uint256){
-        return _users[tokenId].expires;
-    }
-
-    function partiesOf(uint256 tokenId) public view virtual override returns(address[] memory){
-        return _users[tokenId].parties;
-    }
-
-    function splitOf(uint256 tokenId) public view virtual override returns(uint256[] memory){
-        return _users[tokenId].split;
+    function splitOf(uint256 tokenId) public view virtual returns(uint256[] memory){
+        return _profits[tokenId].split;
     }
 
     /// @dev See {IERC165-supportsInterface}.
@@ -85,11 +77,9 @@ import { IERC4907ShareProfit } from "./interfaces/IERC4907ShareProfit.sol";
             address[] memory addresses;
             uint256[] memory splits;
             delete _users[tokenId];
-            emit UpdateUser(tokenId, address(0),0, addresses, splits);
+            delete _profits[tokenId];
+            emit UpdateUser(tokenId, address(0),0);
+            emit UpdateShareProfit(tokenId, addresses, splits);
         }
-    }
-
-    function mint(address to, uint256 tokenId) public virtual{
-        _mint(to, tokenId);
     }
 } 
