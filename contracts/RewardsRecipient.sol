@@ -2,11 +2,11 @@
 pragma solidity ^0.8.9;
 
 import { ERC165Storage } from '@openzeppelin/contracts/utils/introspection/ERC165Storage.sol';
-import { IRewardsReceiver } from './interfaces/IRewardsReceiver.sol';
+import { IRewardsRecipient } from './interfaces/IRewardsRecipient.sol';
 
-contract RewardsReceiver is ERC165Storage {
+contract RewardsRecipient is ERC165Storage {
   constructor(){
-    _registerInterface(type(IRewardsReceiver).interfaceId);
+    _registerInterface(type(IRewardsRecipient).interfaceId);
   }
  function onTokenGeneratingEvent(uint256 tokenId, address token_address, uint256 token_amount) external{
   //do something

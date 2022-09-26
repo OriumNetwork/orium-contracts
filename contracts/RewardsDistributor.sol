@@ -4,11 +4,11 @@ pragma solidity ^0.8.9;
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
 import  { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 import { IERC4907 } from './interfaces/IERC4907.sol';
-import { IRewardsReceiver } from './interfaces/IRewardsReceiver.sol';
+import { IRewardsRecipient } from './interfaces/IRewardsRecipient.sol';
 import  { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import  { ERC165Checker } from '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
 
-contract Rewarder is Pausable, AccessControl {
+contract RewardsDistributor is Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
   bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
@@ -16,9 +16,9 @@ contract Rewarder is Pausable, AccessControl {
   IERC4907 public nft;
 
   constructor(address operator_, address rewardToken_, address nft_)   {
-    require(operator_ != address(0), "Rewarder: operator is the zero address");
-    require(rewardToken_ != address(0), "Rewarder: rewardToken is the zero address");
-    require(nft_ != address(0), "Rewarder: nft is the zero address");
+    require(operator_ != address(0), "RewardsDistributor: operator is the zero address");
+    require(rewardToken_ != address(0), "RewardsDistributor: rewardToken is the zero address");
+    require(nft_ != address(0), "RewardsDistributor: nft is the zero address");
 
     rewardToken = IERC20(rewardToken_);
     nft = IERC4907(nft_);
@@ -29,7 +29,7 @@ contract Rewarder is Pausable, AccessControl {
   }
 
   function rewardUsers(uint256[] calldata tokenIds, uint256[] calldata  amounts) external onlyRole(OPERATOR_ROLE) {
-    require(tokenIds.length == amounts.length, "Rewarder: tokenIds and amounts length mismatch");
+    require(tokenIds.length == amounts.length, "RewardsDistributor: tokenIds and amounts length mismatch");
       for (uint256 i; i < tokenIds.length; i++) {
         uint256 tokenId = tokenIds[i];
         uint256 amount = amounts[i];
@@ -41,15 +41,15 @@ contract Rewarder is Pausable, AccessControl {
 
     // Token Distribution
     function platformClaim(uint256 tokenId, uint256 amount, address[] memory parties, uint256[] memory splits) internal {
-        require(parties.length == splits.length, "Rewarder: parties and splits length mismatch");
+        require(parties.length == splits.length, "RewardsDistributor: parties and splits length mismatch");
        
         for (uint256 i; i < parties.length; i++) {
             address to = parties[i];
             uint256 split = splits[i];
             uint256 tokensToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, tokensToTransfer);
-            if (ERC165Checker.supportsInterface(to, type(IRewardsReceiver).interfaceId)) {
-              IRewardsReceiver(to).onTokenGeneratingEvent(tokenId, address(nft) ,tokensToTransfer);
+            if (ERC165Checker.supportsInterface(to, type(IRewardsRecipient).interfaceId)) {
+              IRewardsRecipient(to).onTokenGeneratingEvent(tokenId, address(nft) ,tokensToTransfer);
             }
         }
     }
