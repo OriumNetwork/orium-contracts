@@ -17,8 +17,8 @@ describe("RewardDistributor", function () {
   let RewardToken: ContractFactory;
   let rewardToken: Contract;
 
-  let RewardReceiver: ContractFactory;
-  let rewardReceiver: Contract;
+  let RewardRecipient: ContractFactory;
+  let rewardRecipient: Contract;
 
   let Nft: ContractFactory;
   let nft: Contract;
@@ -41,18 +41,18 @@ describe("RewardDistributor", function () {
     rewardDistributor = await RewardDistributor.deploy(owner.address, rewardToken.address, nft.address);
     await rewardDistributor.deployed();
 
-    RewardReceiver = await ethers.getContractFactory("RewardRecipient");
-    rewardReceiver = await RewardReceiver.deploy();
-    await rewardReceiver.deployed();
+    RewardRecipient = await ethers.getContractFactory("RewardRecipient");
+    rewardRecipient = await RewardRecipient.deploy();
+    await rewardRecipient.deployed();
 
     await rewardToken.connect(owner).transfer(rewardDistributor.address, toWei("1000"));
 
   });
 
-  describe("Deployment", function () {
+  describe("RewardDistributor Airdrop", function () {
     it("Should lend a nft and split value between contract and non contract", async function () {
       const tokenId = 1;
-      const parties = [rewardReceiver.address, nonContractParty.address];
+      const parties = [rewardRecipient.address, nonContractParty.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUserShareProfit(tokenId, nftUser.address, ONE_DAY, parties, split);
@@ -60,7 +60,7 @@ describe("RewardDistributor", function () {
     });
     it("Should lend a nft and split value between contracts", async function () {
       const tokenId = 1;
-      const parties = [rewardReceiver.address, rewardReceiver.address];
+      const parties = [rewardRecipient.address, rewardRecipient.address];
       const split = [60, 40];
       await nft.connect(owner).mint(player1.address, tokenId);
       await nft.connect(player1).setUserShareProfit(tokenId, nftUser.address, ONE_DAY, parties, split);

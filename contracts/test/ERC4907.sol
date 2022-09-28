@@ -27,7 +27,7 @@ import { IERC4907 } from "../interfaces/IERC4907.sol";
         require(_isApprovedOrOwner(msg.sender, tokenId), "ERC4907: transfer caller is not owner nor approved");
         UserInfo storage info =  _users[tokenId];
         info.user = user;
-        info.expires = expires;
+        info.expires = uint64(block.timestamp)+expires;
         emit UpdateUser(tokenId, user, expires);
     }
 

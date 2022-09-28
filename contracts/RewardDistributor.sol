@@ -62,6 +62,36 @@ contract RewardDistributor is Pausable, AccessControl {
         }
     }
 
+    function rewardClaim(uint256 tokenId) external {
+      if(nft.userOf(tokenId) != address(0)){
+        require(msg.sender == nft.userOf(tokenId), "RewardDistributor: caller is not the user");
+      }else{
+        require(msg.sender == nft.ownerOf(tokenId), "RewardDistributor: caller is not the owner");
+      }
+      address[] memory parties = nft.partiesOf(tokenId);
+      uint256[] memory splits = nft.splitOf(tokenId);
+      require(parties.length == splits.length, "RewardDistributor: parties and splits length mismatch");
+
+      for(uint256 i; i < parties.length; i++){
+            address to = parties[i];
+            uint256 split = splits[i];
+            uint256 amountToTransfer = calculateClaim(100 ether, split); //get value from a balance mapping
+            rewardToken.transfer(to, amountToTransfer);
+
+        if (ERC165Checker.supportsInterface(to, type(IRewardRecipient).interfaceId)) {
+              
+              address[] memory nft_addresses = new address[](1);
+              uint256[] memory tokenIds = new uint256[](1);
+              uint256[] memory token_amount = new uint256[](1);
+
+              nft_addresses[0] = address(nft);
+              tokenIds[0] = tokenId;
+              token_amount[0] = amountToTransfer;
+
+              IRewardRecipient(to).onTokenGeneratingEvent(msg.sig, nft_addresses, tokenIds, parties, token_amount);
+            }
+      }
+    }
     function calculateClaim(uint256 amount, uint256 split) internal pure returns (uint256) {
         return amount * split / 100;
     }
