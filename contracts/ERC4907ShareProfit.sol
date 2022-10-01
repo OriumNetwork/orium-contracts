@@ -21,9 +21,8 @@ import { IERC4907ShareProfit } from "./interfaces/IERC4907ShareProfit.sol";
     /// @param split The split of the profit
     event UpdateShareProfit(uint256 indexed tokenId, address[] parties, uint256[] split);
 
-    constructor(string memory name_, string memory symbol_) ERC4907(name_, symbol_){
-     
-     }
+    constructor(string memory name_, string memory symbol_) ERC4907(name_, symbol_) {}
+    
      /// @notice set the user and expires of an NFT
     /// @dev The zero address indicates there is no user
     /// Throws if `tokenId` is not valid NFT
