@@ -34,7 +34,7 @@ import { IERC4907ShareProfit } from "./interfaces/IERC4907ShareProfit.sol";
         uint256[] memory split_ = new uint256[](1);
         parties_[0] = user;
         split_[0] = 1;
-        setUserShareProfit(tokenId,user,expires,  parties_ , split_);
+        setUserShareProfit(tokenId, user, expires,  parties_ , split_);
     }
 
     /// @notice set the user and expires of an NFT
