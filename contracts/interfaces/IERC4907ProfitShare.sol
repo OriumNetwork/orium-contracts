@@ -1,6 +1,9 @@
+// SPDX-License-Identifier: CC0-1.0
+pragma solidity ^0.8.9;
+
 import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
 
-interface IERC4907ShareProfit is IERC721 {
+interface IERC4907ProfitShare is IERC721 {
 
     // Logged when the user of an NFT is changed or expires is changed
     /// @notice Emitted when the `user` of an NFT or the `expires` of the `user` is changed
