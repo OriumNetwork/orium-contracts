@@ -1,13 +1,29 @@
-# Sample Hardhat Project
+# Orium Aavegotchi Lending
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+![Github Badge](https://github.com/OriumNetwork/orium-aavegotchi-lending/actions/workflows/master.yaml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/OriumNetwork/orium-aavegotchi-lending/badge.svg?branch=master)](https://coveralls.io/github/OriumNetwork/orium-aavegotchi-lending?branch=master)
+[![solidity - v0.8.9](https://img.shields.io/static/v1?label=solidity&message=v0.8.9&color=2ea44f&logo=solidity)](https://github.com/OriumNetwork)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Discord](https://img.shields.io/discord/1009147970832322632?label=discord&logo=discord&logoColor=white)](https://discord.gg/NaNTgPK5rx)
+[![Twitter Follow](https://img.shields.io/twitter/follow/oriumnetwork?label=Follow&style=social)](https://twitter.com/OriumNetwork)
 
-Try running some of the following tasks:
+Orium Contracts is a Hardhat Solidity project that implements ERC4907ProfitShare a 
+extension to ERC4907 lending protocol standard.
 
+## Run Locally
 ```shell
-npx hardhat help
 npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
 ```
+
+## New Functions Added
+
+In order to decide what to do with an existing lending, it's necessary to identify its on-chain state. The following
+table describes all actions that the lending contract evaluates based in the lending state.
+
+|  **Function**  	|    **Arguments**    	|                           **Condition**                                                    	                            | **Description**                                                                                                                	|
+|:-----------:	|:----------------:	|:-----------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------------------------------------------------------------------------	|
+|    `setUserProfitShare`   	|      `uint256 tokenId, address user, uint64 expires, address[] memory parties, uint256[] memory split`      	|                `parties and split needs to have the same array length. The sum of splits must be equal to 100 ether (100%) `                             	                | Similar function to the original setUser, but now stores aditional information usefull to claim or air drop reward farmed by nft.                                                      	|
+|  `setUser` 	|   `uint256 tokenId, address user, uint64 expires`   	| `must be a valid id` 	 | overrides original function to call setUserProfitShare and set the user as only party and split to 100 ethers (100%)                                               	|
+|   `partiesOf`  	|   `uint256 tokenId`   	|                `must be a valid id`                              	                | returns parties setted in the nft                             	|
+| `splitOf` 	| `uint256 tokenId` 	| `must be a valid id` 	 | returns split setted in the nft                        	|
+|  `_beforeTokenTransfer`  	|     ` address from, address to, uint256 tokenId`     	|                        `must be a valid id`                                            	                        | overrides original function to reset split and parties when ownership is changed 	|
