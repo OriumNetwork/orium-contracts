@@ -17,8 +17,7 @@ npx hardhat test
 
 ## New Functions Added
 
-In order to decide what to do with an existing lending, it's necessary to identify its on-chain state. The following
-table describes all actions that the lending contract evaluates based in the lending state.
+The following table describes the main changes and functions in ERC4907ProfitShare smart contract.
 
 |  **Function**  	|    **Arguments**    	|                           **Observations**                                                    	                            | **Description**                                                                                                                	|
 |:-----------:	|:----------------:	|:-----------------------------------------------------------------------------------------------------------------------:|--------------------------------------------------------------------------------------------------------------------------------	|
