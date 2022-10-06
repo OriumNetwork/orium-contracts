@@ -1,14 +1,14 @@
-# Orium Aavegotchi Lending
+# Orium Contracts
 
 ![Github Badge](https://github.com/OriumNetwork/orium-aavegotchi-lending/actions/workflows/master.yaml/badge.svg)
-[![Coverage Status](https://coveralls.io/repos/github/OriumNetwork/orium-aavegotchi-lending/badge.svg?branch=master)](https://coveralls.io/github/OriumNetwork/orium-aavegotchi-lending?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/OriumNetwork/orium-contracts/badge.svg?branch=master)](https://coveralls.io/github/OriumNetwork/orium-contracts?branch=master)
 [![solidity - v0.8.9](https://img.shields.io/static/v1?label=solidity&message=v0.8.9&color=2ea44f&logo=solidity)](https://github.com/OriumNetwork)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Discord](https://img.shields.io/discord/1009147970832322632?label=discord&logo=discord&logoColor=white)](https://discord.gg/NaNTgPK5rx)
 [![Twitter Follow](https://img.shields.io/twitter/follow/oriumnetwork?label=Follow&style=social)](https://twitter.com/OriumNetwork)
 
 Orium Contracts is a Hardhat Solidity project that implements ERC4907ProfitShare a 
-extension to ERC4907 lending protocol standard.
+extension to [ERC4907](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-4907.md) lending protocol standard.
 
 ## Run Locally
 ```shell
