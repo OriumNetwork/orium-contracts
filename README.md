@@ -29,7 +29,7 @@ The following table describes the main changes and functions in ERC4907ProfitSha
 
 
 ## Reference Implementation
-Implementation: [`ERC4907.sol`](./contracts/ERC4907ProfitShare.sol)
+Implementation: [`ERC4907ProfitShare.sol`](./contracts/ERC4907ProfitShare.sol)
 ```solidity
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
