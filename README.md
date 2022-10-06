@@ -25,4 +25,4 @@ The following table describes the main changes and functions in ERC4907ProfitSha
 |  `setUser` 	|   `uint256 tokenId, address user, uint64 expires`   	|  	 | overrides original function to call setUserProfitShare and set the user as only party and split to 100 ethers (100%)                                               	|
 |   `partiesOf`  	|   `uint256 tokenId`   	|                                              	                | returns parties setted in the nft                             	|
 | `splitOf` 	| `uint256 tokenId` 	|  	 | returns split setted in the nft                        	|
-|  `_beforeTokenTransfer`  	|     ` address from, address to, uint256 tokenId`     	|                        `must be a valid id`                                            	                        | overrides original function to reset split and parties when ownership is changed 	|
+|  `_beforeTokenTransfer`  	|     ` address from, address to, uint256 tokenId`     	|                                                                    	                        | overrides original function to reset split and parties when ownership is changed 	|
