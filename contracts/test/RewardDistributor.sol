@@ -8,11 +8,11 @@ import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import { ERC165Checker } from '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
 
 contract RewardDistributor is Pausable, AccessControl {
-  bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-  bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
 
-  IERC20 public rewardToken;
-  IERC4907ProfitShare public nft;
+    IERC20 public rewardToken;
+    IERC4907ProfitShare public nft;
 
   constructor(address operator_, address rewardToken_, address nft_) {
     require(operator_ != address(0), "RewardDistributor: operator is the zero address");
