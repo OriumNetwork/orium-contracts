@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
-import {ERC4907} from "./test/ERC4907.sol";
-import {IERC4907ProfitShare} from "./interfaces/IERC4907ProfitShare.sol";
+import { ERC4907 } from "./test/ERC4907.sol";
+import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
 
 contract ERC4907ProfitShare is ERC4907 {
     struct ProfitShareInfo {

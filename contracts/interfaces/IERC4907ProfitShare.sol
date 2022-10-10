@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
-import {IERC4907} from "../interfaces/IERC4907.sol";
+import { IERC4907 } from "../interfaces/IERC4907.sol";
 
 interface IERC4907ProfitShare is IERC4907 {
     /// Logged when the profit share of an NFT is changed
