@@ -12,7 +12,7 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
         uint256[] split;   // split of parties
     }
 
-    mapping (uint256  => ProfitShareInfo) internal _profits;
+    mapping (uint256 => ProfitShareInfo) internal _profits;
 
     /// @notice Emited when the profit of an NFT is updated
     /// @dev parties and split neeed to be the same length
