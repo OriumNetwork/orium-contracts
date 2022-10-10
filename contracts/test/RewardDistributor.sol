@@ -2,10 +2,10 @@
 pragma solidity ^0.8.9;
 
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
-import  { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
+import { AccessControl } from "@openzeppelin/contracts/access/AccessControl.sol";
 import { IERC4907ProfitShare } from '../interfaces/IERC4907ProfitShare.sol';
-import  { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
-import  { ERC165Checker } from '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
+import { IERC20 } from '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import { ERC165Checker } from '@openzeppelin/contracts/utils/introspection/ERC165Checker.sol';
 
 contract RewardDistributor is Pausable, AccessControl {
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -14,7 +14,7 @@ contract RewardDistributor is Pausable, AccessControl {
   IERC20 public rewardToken;
   IERC4907ProfitShare public nft;
 
-  constructor(address operator_, address rewardToken_, address nft_)   {
+  constructor(address operator_, address rewardToken_, address nft_) {
     require(operator_ != address(0), "RewardDistributor: operator is the zero address");
     require(rewardToken_ != address(0), "RewardDistributor: rewardToken is the zero address");
     require(nft_ != address(0), "RewardDistributor: nft is the zero address");
@@ -34,7 +34,7 @@ contract RewardDistributor is Pausable, AccessControl {
       }
     }
 
-    // Token Distribution
+  // Token Distribution
   function _rewardUser(uint256 tokenId, uint256 amount) internal {
          address[] memory parties = nft.partiesOf(tokenId);
          uint256[] memory splits = nft.splitOf(tokenId);
