@@ -38,7 +38,6 @@ contract RewardDistributor is Pausable, AccessControl {
         }
     }
 
-    // Token Distribution
     function _rewardUser(uint256 tokenId, uint256 amount) internal {
         address[] memory beneficiaries = nft.beneficiariesOf(tokenId);
         uint256[] memory splits = nft.splitOf(tokenId);
@@ -57,7 +56,7 @@ contract RewardDistributor is Pausable, AccessControl {
         } else {
             require(msg.sender == nft.ownerOf(tokenId), "RewardDistributor: caller is not the owner");
         }
-        uint256 amountToTransfer = 100 ether; //calculate value farmed by nft
+        uint256 amountToTransfer = 100 ether; // calculate value farmed by nft
         _rewardUser(tokenId, amountToTransfer);
     }
 
