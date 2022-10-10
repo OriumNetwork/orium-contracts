@@ -8,18 +8,18 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
     
     struct ProfitShareInfo 
     {
-        address[] parties; // address of parties
-        uint256[] split;   // split of parties
+        address[] beneficiaries; // address of beneficiaries
+        uint256[] split;   // split of beneficiaries
     }
 
     mapping (uint256 => ProfitShareInfo) internal _profits;
 
     /// @notice Emited when the profit of an NFT is updated
-    /// @dev parties and split neeed to be the same length
+    /// @dev beneficiaries and split neeed to be the same length
     /// @param tokenId The NFT to update the profit for
-    /// @param parties The parties to split the profit
+    /// @param beneficiaries The beneficiaries to split the profit
     /// @param split The split of the profit
-    event UpdateProfitShare(uint256 indexed tokenId, address[] parties, uint256[] split);
+    event UpdateProfitShare(uint256 indexed tokenId, address[] beneficiaries, uint256[] split);
 
     constructor(string memory name_, string memory symbol_) ERC4907(name_, symbol_) {}
     
@@ -29,11 +29,11 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
     function setUser(uint256 tokenId, address user, uint64 expires) public virtual override{
-        address[] memory parties_ = new address[](1);
+        address[] memory beneficiaries_ = new address[](1);
         uint256[] memory split_ = new uint256[](1);
-        parties_[0] = user;
+        beneficiaries_[0] = user;
         split_[0] = 1;
-        setUserProfitShare(tokenId, user, expires,  parties_ , split_);
+        setUserProfitShare(tokenId, user, expires,  beneficiaries_ , split_);
     }
 
     /// @notice set the user and expires of an NFT
@@ -42,15 +42,15 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
     /// @param tokenId  The NFT to update the profit for
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
-    /// @param parties The parties to split the profit
+    /// @param beneficiaries The beneficiaries to split the profit
     /// @param split The split of the profit
-    function setUserProfitShare(uint256 tokenId, address user, uint64 expires, address[] memory parties, uint256[] memory split) public virtual {
-        require(parties.length == split.length, "ERC4907ProfitShare: parties and split must be the same length");
+    function setUserProfitShare(uint256 tokenId, address user, uint64 expires, address[] memory beneficiaries, uint256[] memory split) public virtual {
+        require(beneficiaries.length == split.length, "ERC4907ProfitShare: beneficiaries and split must be the same length");
         require(_isValidSplit(split), "ERC4907ProfitShare: split must be valid");
         super.setUser(tokenId, user, expires);
-        _profits[tokenId].parties = parties;
+        _profits[tokenId].beneficiaries = beneficiaries;
         _profits[tokenId].split = split;
-        emit UpdateProfitShare(tokenId, parties, split);
+        emit UpdateProfitShare(tokenId, beneficiaries, split);
     }
     function _isValidSplit(uint256[] memory split) internal pure returns (bool){
         uint256 sum = 0;
@@ -59,8 +59,8 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
         }
         return sum == 100 ether;
     }
-    function partiesOf(uint256 tokenId) public view virtual returns(address[] memory){
-        return _profits[tokenId].parties;
+    function beneficiariesOf(uint256 tokenId) public view virtual returns(address[] memory){
+        return _profits[tokenId].beneficiaries;
     }
 
     function splitOf(uint256 tokenId) public view virtual returns(uint256[] memory){

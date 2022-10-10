@@ -46,53 +46,50 @@ describe("ERC4907ProfitShare", function () {
 
   describe("setUserProfitShare", function () {
     const tokenId = 1;
-    let parties: string[];
+    let beneficiaries: string[];
     const split = [toWei("60"), toWei("35"), toWei("5")];
     let expires: number;
 
     beforeEach(async function () {
-      parties = [nftOwner.address, nftUser.address, thirdParty.address];
+      beneficiaries = [nftOwner.address, nftUser.address, thirdParty.address];
       const TIME_STAMP = (await ethers.provider.getBlock("latest")).timestamp;
       expires = TIME_STAMP + ONE_DAY;
       await nft.connect(operator).mint(nftOwner.address, tokenId);
     })
 
     it("Should set user and profit share by a nft owner", async function () {
-      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, parties, split)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, parties, split);
-    })
-
+      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, split)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, beneficiaries, split);
+    });
     it("Should set user and profit share by a nft operator", async function () {
       await nft.connect(nftOwner).approve(operator.address, tokenId);
-      await nft.connect(operator).setUserProfitShare(tokenId, nftUser.address, expires, parties, split);
+      await nft.connect(operator).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, split);
     })
 
     it("Should NOT set user profit share by a nft user", async function () {
-      await expect(nft.connect(nftUser).setUserProfitShare(tokenId, nftUser.address, expires, parties, split)).to.be.reverted;
+      await expect(nft.connect(nftUser).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, split)).to.be.reverted;
     })
-
-    it("Should NOT set user profit share in case of split and parties length mismatch", async function () {
-      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, parties, [60, 40])).to.be.revertedWith("ERC4907ProfitShare: parties and split must be the same length");
+    it("Should NOT set user profit share in case of split and beneficiaries length mismatch", async function () {
+      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [60, 40])).to.be.revertedWith("ERC4907ProfitShare: beneficiaries and split must be the same length");
     })
 
     it("Should NOT set user profit share if the sum of split it's not equal to 100 ether", async function () {
-      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, parties, [toWei("60"), toWei("35"), toWei("4")])).to.be.revertedWith("ERC4907ProfitShare: split must be valid");
+      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [toWei("60"), toWei("35"), toWei("4")])).to.be.revertedWith("ERC4907ProfitShare: split must be valid");
     })
 
   });
 
   describe("RewardDistributor", function () {
     const tokenId = 1;
-    let parties: string[];
+    let beneficiaries: string[];
     const split = [toWei("60"), toWei("35"), toWei("5")];
     const rewardAmount = toWei("100");
 
     beforeEach(async function () {
-      parties = [nftOwner.address, nftUser.address, thirdParty.address];
+      beneficiaries = [nftOwner.address, nftUser.address, thirdParty.address];
       await nft.connect(operator).mint(nftOwner.address, tokenId);
     })
-
-    it("Should lend a nft and split value between parties in airdroping distribution", async function () {
-      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, parties, split);
+    it("Should lend a nft and split value between beneficiaries in airdroping distribution", async function () {
+      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
       await expect(rewardDistributor.connect(operator).rewardUsers([tokenId], [rewardAmount])).to.not.be.reverted;
     });
 

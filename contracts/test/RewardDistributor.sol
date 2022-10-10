@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
 import { Pausable } from "@openzeppelin/contracts/security/Pausable.sol";
@@ -36,7 +36,7 @@ contract RewardDistributor is Pausable, AccessControl {
 
   // Token Distribution
   function _rewardUser(uint256 tokenId, uint256 amount) internal {
-         address[] memory parties = nft.partiesOf(tokenId);
+         address[] memory parties = nft.beneficiariesOf(tokenId);
          uint256[] memory splits = nft.splitOf(tokenId);
         require(parties.length == splits.length, "RewardDistributor: parties and splits length mismatch");
         for (uint256 i; i < parties.length; i++) {

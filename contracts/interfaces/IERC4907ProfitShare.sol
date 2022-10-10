@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
-import { IERC721 } from '@openzeppelin/contracts/token/ERC721/IERC721.sol';
-
-interface IERC4907ProfitShare is IERC721 {
+import { IERC4907 } from "../test/IERC4907.sol";
+interface IERC4907ProfitShare is IERC4907 {
 
     // Logged when the user of an NFT is changed or expires is changed
     /// @notice Emitted when the `user` of an NFT or the `expires` of the `user` is changed
@@ -37,5 +36,5 @@ interface IERC4907ProfitShare is IERC721 {
     /// @notice Get the parties of an NFTreting
     /// @dev The zero value indicates that there is no user
     /// @param tokenId The NFT to get the parties for
-    function partiesOf(uint256 tokenId) external view returns(address[] memory);
+    function beneficiariesOf(uint256 tokenId) external view returns(address[] memory);
 }
