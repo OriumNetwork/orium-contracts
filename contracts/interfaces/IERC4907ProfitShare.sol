@@ -16,18 +16,6 @@ interface IERC4907ProfitShare is IERC4907 {
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
     function setUser(uint256 tokenId, address user, uint64 expires, address[] calldata beneficiaries, uint256[] calldata split) external;
 
-    /// @notice Get the user address of an NFT
-    /// @dev The zero address indicates that there is no user or the user is expired
-    /// @param tokenId The NFT to get the user address for
-    /// @return The user address for this NFT
-    function userOf(uint256 tokenId) external view returns(address);
-
-    /// @notice Get the user expires of an NFT
-    /// @dev The zero value indicates that there is no user
-    /// @param tokenId The NFT to get the user expires for
-    /// @return The user expires for this NFT
-    function userExpires(uint256 tokenId) external view returns(uint256);
-
     // @notice Get the splits of an NFTrenting
     /// @dev The zero value indicates that there is no user
     /// @param tokenId The NFT to get the beneficiaries for
