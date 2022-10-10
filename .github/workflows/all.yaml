@@ -1,5 +1,7 @@
 name: Build
 
+on: push
+
 jobs:
   build_test_deploy:
     runs-on: ubuntu-latest
