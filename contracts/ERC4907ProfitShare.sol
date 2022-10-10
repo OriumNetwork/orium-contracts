@@ -3,7 +3,6 @@ pragma solidity ^0.8.9;
 
 import { ERC4907 } from "./test/ERC4907.sol";
 import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
-
   contract ERC4907ProfitShare is ERC4907{
     
     struct ProfitShareInfo 
@@ -57,17 +56,15 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
         address from,
         address to,
         uint256 tokenId
-    ) internal virtual override{
-        super._beforeTokenTransfer(from, to, tokenId);
-     
+    ) internal virtual override {
+      
         if (from != to && _users[tokenId].user != address(0)) {
-            address[] memory addresses;
-            uint256[] memory splits;
-            delete _users[tokenId];
-            delete _profits[tokenId];
-            emit UpdateUser(tokenId, address(0), 0);
-            emit UpdateProfitShare(tokenId, addresses, splits);
+              address[] memory addresses;
+              uint256[] memory splits;
+              emit UpdateProfitShare(tokenId, addresses, splits);
         }
+
+        super._beforeTokenTransfer(from, to, tokenId);
     }
       function mint(address to, uint256 tokenId) public virtual {
         super._mint(to, tokenId);

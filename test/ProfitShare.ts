@@ -75,6 +75,10 @@ describe("ERC4907ProfitShare", function () {
     it("Should NOT set user profit share if the sum of split it's not equal to 100 ether", async function () {
       await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [toWei("60"), toWei("35"), toWei("4")])).to.be.revertedWith("ERC4907ProfitShare: split must be valid");
     })
+    it("Should emit UpdateShareProfit and UpdateUser when transferred after a setUser", async function () {
+      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
+      await expect(nft.connect(nftOwner).transferFrom(nftOwner.address, nftUser.address, tokenId)).to.emit(nft, "UpdateProfitShare").and.to.emit(nft, "UpdateUser");
+    })
 
   });
 
@@ -92,6 +96,7 @@ describe("ERC4907ProfitShare", function () {
       await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
       await expect(rewardDistributor.connect(operator).rewardUsers([tokenId], [rewardAmount])).to.not.be.reverted;
     });
+
 
   });
 
