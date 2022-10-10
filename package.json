@@ -4,7 +4,8 @@
   "scripts": {
     "test": "npx hardhat test",
     "compile": "npx hardhat compile",
-    "coverage": "npx hardhat coverage"
+    "coverage": "npx hardhat coverage",
+    "prettier": "prettier --write 'contracts/**/*.sol'"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.8.0-rc.1",
@@ -13,6 +14,8 @@
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "prettier": "^2.7.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.24",
     "solidity-coverage": "^0.8.2"
   }
 }

@@ -5,23 +5,26 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../interfaces/IERC4907.sol";
 
 contract ERC4907 is ERC721, IERC4907 {
-    struct UserInfo
-    {
-        address user;   // address of user role
+    struct UserInfo {
+        address user; // address of user role
         uint64 expires; // unix timestamp, user expires
     }
 
-    mapping (uint256  => UserInfo) internal _users;
+    mapping(uint256 => UserInfo) internal _users;
 
-    constructor(string memory name_, string memory symbol_) ERC721(name_,symbol_) {}
+    constructor(string memory name_, string memory symbol_) ERC721(name_, symbol_) {}
 
     /// @notice set the user and expires of a NFT
     /// @dev The zero address indicates there is no user
     /// @dev Throws if `tokenId` is not valid NFT
     /// @param user  The new user of the NFT
     /// @param expires  UNIX timestamp, The new user could use the NFT before expires
-    function setUser(uint256 tokenId, address user, uint64 expires) public virtual {
-        require(_isApprovedOrOwner(msg.sender, tokenId),"ERC721: transfer caller is not owner nor approved");
+    function setUser(
+        uint256 tokenId,
+        address user,
+        uint64 expires
+    ) public virtual {
+        require(_isApprovedOrOwner(msg.sender, tokenId), "ERC721: transfer caller is not owner nor approved");
         UserInfo storage info = _users[tokenId];
         info.user = user;
         info.expires = expires;
@@ -32,8 +35,8 @@ contract ERC4907 is ERC721, IERC4907 {
     /// @dev The zero address indicates that there is no user or the user is expired
     /// @param tokenId The NFT to get the user address for
     /// @return The user address for this NFT
-    function userOf(uint256 tokenId)public view virtual returns (address) {
-        if(uint256(_users[tokenId].expires) >= block.timestamp) {
+    function userOf(uint256 tokenId) public view virtual returns (address) {
+        if (uint256(_users[tokenId].expires) >= block.timestamp) {
             return _users[tokenId].user;
         } else {
             return address(0);
@@ -64,5 +67,4 @@ contract ERC4907 is ERC721, IERC4907 {
             emit UpdateUser(tokenId, address(0), 0);
         }
     }
-
 }
