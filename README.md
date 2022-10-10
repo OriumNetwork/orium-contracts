@@ -1,13 +1,24 @@
-# Sample Hardhat Project
+# Orium Contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+![Github Badge](https://github.com/OriumNetwork/orium-aavegotchi-lending/actions/workflows/master.yaml/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/OriumNetwork/orium-contracts/badge.svg?branch=master)](https://coveralls.io/github/OriumNetwork/orium-contracts?branch=master)
+[![solidity - v0.8.9](https://img.shields.io/static/v1?label=solidity&message=v0.8.9&color=2ea44f&logo=solidity)](https://github.com/OriumNetwork)
+[![License: CC0 v1](https://img.shields.io/badge/License-CC0v1-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
+[![Discord](https://img.shields.io/discord/1009147970832322632?label=discord&logo=discord&logoColor=white)](https://discord.gg/NaNTgPK5rx)
+[![Twitter Follow](https://img.shields.io/twitter/follow/oriumnetwork?label=Follow&style=social)](https://twitter.com/OriumNetwork)
 
-Try running some of the following tasks:
+Orium Contracts is a Hardhat Solidity project that demonstrates how game developers can integrate with Orium 
+Network. Orium supports multiple rental protocols, select one of the protocols below in order to get started:
+
+* [ERC-4097](./docs/ERC4907.md): Extension of ERC-4907 that expands the standard's scope to include profit-share rentals. 
+
+## Getting Started
+
+To get started with this project, clone the repository and run the following commands:
 
 ```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+npm ci
+npm run compile
+npm test
+npm run coverage
 ```
