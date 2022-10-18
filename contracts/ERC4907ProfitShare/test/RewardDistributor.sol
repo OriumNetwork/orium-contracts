@@ -39,12 +39,12 @@ contract RewardDistributor is Pausable, AccessControl {
     }
 
     function _rewardUser(uint256 tokenId, uint256 amount) internal {
-        address[] memory beneficiaries = nft.beneficiariesOf(tokenId);
-        uint256[] memory splits = nft.splitOf(tokenId);
-        require(beneficiaries.length == splits.length, "RewardDistributor: beneficiaries and splits length mismatch");
+        address[] memory beneficiaries = nft.profitShareOf(tokenId).beneficiaries;
+        uint256[] memory shares = nft.profitShareOf(tokenId).shares;
+        require(beneficiaries.length == shares.length, "RewardDistributor: beneficiaries and shares length mismatch");
         for (uint256 i; i < beneficiaries.length; i++) {
             address to = beneficiaries[i];
-            uint256 split = splits[i];
+            uint256 split = shares[i];
             uint256 amountToTransfer = calculateClaim(amount, split);
             rewardToken.transfer(to, amountToTransfer);
         }

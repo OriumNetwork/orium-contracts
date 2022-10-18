@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "../interfaces/IERC4907.sol";
 
 contract ERC4907 is ERC721, IERC4907 {
-
     struct UserInfo {
         address user;
         uint64 expires;
