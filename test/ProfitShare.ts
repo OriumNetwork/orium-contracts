@@ -96,8 +96,6 @@ describe("ERC4907ProfitShare", function () {
       await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
       await expect(rewardDistributor.connect(operator).rewardUsers([tokenId], [rewardAmount])).to.not.be.reverted;
     });
-
-
   });
 
 });
