@@ -64,14 +64,15 @@ describe("ERC4907ProfitShare", function () {
       await nft.connect(nftOwner).approve(operator.address, tokenId);
       await nft.connect(operator).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, split);
     })
-
+    it("Should set user using legacy function", async function () {
+      await expect(nft.connect(nftOwner).setUser(tokenId, nftUser.address, expires)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, [nftUser.address], [toWei("100")]);
+    })
     it("Should NOT set user profit share by a nft user", async function () {
       await expect(nft.connect(nftUser).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, split)).to.be.reverted;
     })
     it("Should NOT set user profit share in case of split and beneficiaries length mismatch", async function () {
       await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [60, 40])).to.be.revertedWith("ERC4907ProfitShare: beneficiaries and split must be the same length");
     })
-
     it("Should NOT set user profit share if the sum of split it's not equal to 100 ether", async function () {
       await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [toWei("60"), toWei("35"), toWei("4")])).to.be.revertedWith("ERC4907ProfitShare: split must be valid");
     })
@@ -79,7 +80,16 @@ describe("ERC4907ProfitShare", function () {
       await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
       await expect(nft.connect(nftOwner).transferFrom(nftOwner.address, nftUser.address, tokenId)).to.emit(nft, "UpdateProfitShare").and.to.emit(nft, "UpdateUser");
     })
-
+    it("Should return split tokens amount", async function () {
+      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
+      const amountToSplit = toWei("100");
+      const amountsSplitted = await nft.connect(nftUser).splitTokensFor(tokenId, amountToSplit)
+      expect(amountsSplitted).to.be.deep.equal(split);
+    })
+    it("Should check if supports ProfitShare interface", async function () {
+      const correctInterfaceId = Nft.interface.getSighash("supportsInterface(bytes4)")
+      expect(await nft.supportsInterface(correctInterfaceId)).to.be.true;
+    })
   });
 
   describe("RewardDistributor", function () {
