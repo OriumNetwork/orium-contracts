@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: CC0-1.0
 pragma solidity ^0.8.9;
 
-import { ERC4907Upgradeable } from "./ERC4907Upgradeable.sol";
+import { ERC4907Upgradeable } from "./test/ERC4907Upgradeable.sol";
 import { IERC4907ProfitShareUpgradeable } from "./interfaces/IERC4907ProfitShareUpgradeable.sol";
 import { IERC4907Upgradeable } from "./interfaces/IERC4907Upgradeable.sol";
 import { IERC165Upgradeable } from "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
