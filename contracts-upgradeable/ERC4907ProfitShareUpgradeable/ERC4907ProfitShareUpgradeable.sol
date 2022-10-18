@@ -66,11 +66,11 @@ contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShar
     }
 
     function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory _amounts, address[] memory _beneficiaries) {
-        uint256[] memory shares = profitShareOf(tokenId).shares;
-        _beneficiaries = profitShareOf(tokenId).beneficiaries;
+        ProfitShareInfo memory info = profitShareOf(tokenId);
+        _beneficiaries = info.beneficiaries;
         _amounts = new uint256[](_beneficiaries.length);
-        for (uint256 i = 0; i < shares.length; i++) {
-            _amounts[i] = (amount * shares[i]) / 100 ether;
+        for (uint256 i = 0; i < info.shares.length; i++) {
+            _amounts[i] = (amount * info.shares[i]) / 100 ether;
         }
     }
 

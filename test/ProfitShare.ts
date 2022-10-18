@@ -76,6 +76,9 @@ describe("ERC4907ProfitShare", function () {
     it("Should NOT set user profit share by a nft user", async function () {
       await expect(nft.connect(nftUser).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, shares)).to.be.reverted;
     })
+    it("Should NOT set user legacy function by a nft user", async function () {
+      await expect(nft.connect(nftUser).setUser(tokenId, nftUser.address, expires)).to.be.reverted;
+    })
     it("Should NOT set user profit share in case of shares and beneficiaries length mismatch", async function () {
       await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, [60, 40])).to.be.revertedWith("ERC4907ProfitShare: beneficiaries and shares must be the same length");
     })
@@ -114,7 +117,7 @@ describe("ERC4907ProfitShare", function () {
       await rewardToken.connect(operator).transfer(rewardDistributor.address, toWei("10000000"));
     })
 
-    it.skip("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
+    it("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
       const blockNumBefore = await ethers.provider.getBlockNumber();
       const blockBefore = await ethers.provider.getBlock(blockNumBefore);
       const timestampBefore = blockBefore.timestamp;

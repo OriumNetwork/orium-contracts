@@ -39,13 +39,14 @@ contract RewardDistributor is Pausable, AccessControl {
     }
 
     function _rewardUser(uint256 tokenId, uint256 amount) internal {
-        address[] memory beneficiaries;
-        uint256[] memory amounts;
-        (beneficiaries, amounts) = nft.splitTokensFor(tokenId, amount);
-
-        for (uint256 i = 0; i < beneficiaries.length; i++) {
+        address[] memory beneficiaries = nft.profitShareOf(tokenId).beneficiaries;
+        uint256[] memory shares = nft.profitShareOf(tokenId).shares;
+        require(beneficiaries.length == shares.length, "RewardDistributor: beneficiaries and shares length mismatch");
+        for (uint256 i; i < beneficiaries.length; i++) {
             address to = beneficiaries[i];
-            rewardToken.transfer(to, amounts[i]);
+            uint256 split = shares[i];
+            uint256 amountToTransfer = calculateClaim(amount, split);
+            rewardToken.transfer(to, amountToTransfer);
         }
     }
 
@@ -57,5 +58,9 @@ contract RewardDistributor is Pausable, AccessControl {
         }
         uint256 amountToTransfer = 100 ether; // calculate value farmed by nft
         _rewardUser(tokenId, amountToTransfer);
+    }
+
+    function calculateClaim(uint256 amount, uint256 split) internal pure returns (uint256) {
+        return (amount * split) / 100 ether;
     }
 }
