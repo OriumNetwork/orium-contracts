@@ -59,6 +59,9 @@ describe("ERC4907ProfitShare", function () {
 
     it("Should set user and profit share by a nft owner", async function () {
       await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, shares)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, beneficiaries, shares);
+      const profitShareInfo = await nft.profitShareOf(tokenId)
+      expect(profitShareInfo.beneficiaries).to.deep.equal(beneficiaries);
+      expect(profitShareInfo.shares).to.deep.equal(shares);
     });
     it("Should set user and profit share by a nft operator", async function () {
       await nft.connect(nftOwner).approve(operator.address, tokenId);
@@ -66,6 +69,9 @@ describe("ERC4907ProfitShare", function () {
     })
     it("Should set user using legacy function", async function () {
       await expect(nft.connect(nftOwner).setUser(tokenId, nftUser.address, expires)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, [nftUser.address], [toWei("100")]);
+      const profitShareInfo = await nft.profitShareOf(tokenId)
+      expect(profitShareInfo.beneficiaries).to.deep.equal([nftUser.address]);
+      expect(profitShareInfo.shares).to.deep.equal([toWei("100")]);
     })
     it("Should NOT set user profit share by a nft user", async function () {
       await expect(nft.connect(nftUser).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, shares)).to.be.reverted;
