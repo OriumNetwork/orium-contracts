@@ -35,4 +35,9 @@ interface IERC4907ProfitShare is IERC4907 {
     /// @dev The zero value indicates that there is no user
     /// @param tokenId The NFT to get the beneficiaries
     function beneficiariesOf(uint256 tokenId) external view returns (address[] memory);
+
+    /// @notice Get the amount of tokens to distribute to each beneficiary
+    /// @param tokenId The tokenId of the NFT
+    /// @param amount The amount of tokens to be splitted
+    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory);
 }

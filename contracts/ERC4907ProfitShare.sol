@@ -24,7 +24,7 @@ contract ERC4907ProfitShare is ERC4907 {
         address[] memory beneficiaries_ = new address[](1);
         uint256[] memory split_ = new uint256[](1);
         beneficiaries_[0] = user;
-        split_[0] = 1;
+        split_[0] = 100 ether;
         setUserProfitShare(tokenId, user, expires, beneficiaries_, split_);
     }
 
@@ -57,6 +57,15 @@ contract ERC4907ProfitShare is ERC4907 {
 
     function splitOf(uint256 tokenId) public view virtual returns (uint256[] memory) {
         return _profits[tokenId].split;
+    }
+
+    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory) {
+        uint256[] memory split = splitOf(tokenId);
+        uint256[] memory result = new uint256[](split.length);
+        for (uint256 i = 0; i < split.length; i++) {
+            result[i] = (amount * split[i]) / 100 ether;
+        }
+        return result;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
