@@ -31,8 +31,3 @@ jobs:
         run: npm test
         env:
           INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
-      - name: Test Coverage
-        run: npm run coverage
-        env:
-          INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
-          COINMARKETCAP_API_KEY: ${{ secrets.COINMARKETCAP_API_KEY }}
