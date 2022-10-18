@@ -20,7 +20,7 @@ contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShar
         uint256 tokenId,
         address user,
         uint64 expires
-    ) public virtual override(ERC4907Upgradeable, IERC4907Upgradeable) {
+    ) public virtual override {
         address[] memory beneficiaries_ = new address[](1);
         uint256[] memory split_ = new uint256[](1);
         beneficiaries_[0] = user;
@@ -34,7 +34,7 @@ contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShar
         uint64 expires,
         address[] memory beneficiaries,
         uint256[] memory split
-    ) public virtual {
+    ) public virtual override {
         require(beneficiaries.length == split.length, "ERC4907ProfitShare: beneficiaries and split must be the same length");
         require(_isValidSplit(split), "ERC4907ProfitShare: split must be valid");
         super.setUser(tokenId, user, expires);
