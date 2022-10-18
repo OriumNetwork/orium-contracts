@@ -114,7 +114,7 @@ describe("ERC4907ProfitShare", function () {
       await rewardToken.connect(operator).transfer(rewardDistributor.address, toWei("10000000"));
     })
 
-    it.only("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
+    it.skip("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
       const blockNumBefore = await ethers.provider.getBlockNumber();
       const blockBefore = await ethers.provider.getBlock(blockNumBefore);
       const timestampBefore = blockBefore.timestamp;
