@@ -81,7 +81,10 @@ describe("ERC4907ProfitShare", function () {
       await expect(nft.connect(nftOwner).transferFrom(nftOwner.address, nftUser.address, tokenId)).to.emit(nft, "UpdateProfitShare").and.to.emit(nft, "UpdateUser");
     })
     it("Should return split tokens amount", async function () {
-      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, split);
+      const blockNumBefore = await ethers.provider.getBlockNumber();
+      const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+      const timestampBefore = blockBefore.timestamp;
+      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, timestampBefore + ONE_DAY, beneficiaries, split);
       const amountToSplit = toWei("100");
       const amountsSplitted = await nft.connect(nftUser).splitTokensFor(tokenId, amountToSplit)
       expect(amountsSplitted).to.be.deep.equal(split);
