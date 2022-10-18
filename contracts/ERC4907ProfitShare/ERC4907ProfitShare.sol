@@ -83,10 +83,13 @@ contract ERC4907ProfitShare is ERC4907 {
         address to,
         uint256 tokenId
     ) internal virtual override {
-        if (from != to && _users[tokenId].user != address(0)) {
-            address[] memory addresses;
-            uint256[] memory splits;
-            emit UpdateProfitShare(tokenId, addresses, splits);
+        if (from != to) {
+            address[] memory beneficiaries = new address[](1);
+            uint256[] memory shares = new uint256[](1);
+            beneficiaries[0] = to;
+            shares[0] = 100 ether;
+            _profitShareConfigs[tokenId] = ProfitShareInfo({ beneficiaries: beneficiaries, shares: shares });
+            emit UpdateProfitShare(tokenId, beneficiaries, shares);
         }
 
         super._beforeTokenTransfer(from, to, tokenId);

@@ -9,9 +9,7 @@ interface IERC4907ProfitShareUpgradeable is IERC4907Upgradeable {
         uint256[] shares;
     }
 
-    /// Logged when the profit share of an NFT is changed
     /// @notice Emitted when the `profitShare` of an NFT is changed
-    /// The zero address for user indicates that there is no user address
     event UpdateUserProfiShare(uint256 indexed tokenId, address indexed user, uint64 expires, address[] beneficiaries, uint256[] shares);
 
     /// @notice set the user and expires of an NFT
@@ -32,7 +30,7 @@ interface IERC4907ProfitShareUpgradeable is IERC4907Upgradeable {
     ) external;
 
     /// @notice Get the profit share of an NFT
-    /// @dev The zero value indicates that there is no user
+    /// @dev The user address will never be zero
     /// @param tokenId The NFT to get the profit share
     function profitShareOf(uint256 tokenId) external view returns (ProfitShareInfo memory);
 
