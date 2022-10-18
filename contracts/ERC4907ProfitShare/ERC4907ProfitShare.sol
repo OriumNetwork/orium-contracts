@@ -52,11 +52,21 @@ contract ERC4907ProfitShare is ERC4907 {
     }
 
     function beneficiariesOf(uint256 tokenId) public view virtual returns (address[] memory) {
-        return _profits[tokenId].beneficiaries;
+        uint256 lastExpires = _users[tokenId].expires;
+        if (lastExpires < block.timestamp) {
+            return new address[](0);
+        } else {
+            return _profits[tokenId].beneficiaries;
+        }
     }
 
     function splitOf(uint256 tokenId) public view virtual returns (uint256[] memory) {
-        return _profits[tokenId].split;
+        uint256 lastExpires = _users[tokenId].expires;
+        if (lastExpires < block.timestamp) {
+            return new uint256[](0);
+        } else {
+            return _profits[tokenId].split;
+        }
     }
 
     function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory) {
