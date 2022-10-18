@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { Contract, ContractFactory } from "ethers";
+import { BigNumber, Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 
@@ -40,7 +40,7 @@ describe("ERC4907ProfitShare", function () {
     rewardDistributor = await RewardDistributor.deploy(operator.address, rewardToken.address, nft.address);
     await rewardDistributor.deployed();
 
-    await rewardToken.connect(operator).transfer(rewardDistributor.address, toWei("1000"));
+    await rewardToken.connect(operator).transfer(rewardDistributor.address, toWei("10000000"));
 
   });
 
@@ -65,7 +65,7 @@ describe("ERC4907ProfitShare", function () {
     });
     it("Should set user and profit share by a nft operator", async function () {
       await nft.connect(nftOwner).approve(operator.address, tokenId);
-      await nft.connect(operator).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, shares);
+      await expect(nft.connect(operator).setUserProfitShare(tokenId, nftUser.address, expires, beneficiaries, shares)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, beneficiaries, shares);
     })
     it("Should set user using legacy function", async function () {
       await expect(nft.connect(nftOwner).setUser(tokenId, nftUser.address, expires)).to.emit(nft, "UpdateProfitShare").withArgs(tokenId, [nftUser.address], [toWei("100")]);
@@ -94,6 +94,7 @@ describe("ERC4907ProfitShare", function () {
       const amountToSplit = toWei("100");
       const amountsSplitted = await nft.connect(nftUser).splitTokensFor(tokenId, amountToSplit)
       expect(amountsSplitted._amounts).to.be.deep.equal(shares);
+      expect(amountsSplitted._beneficiaries).to.be.deep.equal(beneficiaries);
     })
     it("Should check if supports ProfitShare interface", async function () {
       const correctInterfaceId = Nft.interface.getSighash("supportsInterface(bytes4)")
@@ -110,10 +111,15 @@ describe("ERC4907ProfitShare", function () {
     beforeEach(async function () {
       beneficiaries = [nftOwner.address, nftUser.address, thirdParty.address];
       await nft.connect(operator).mint(nftOwner.address, tokenId);
+      await rewardToken.connect(operator).transfer(rewardDistributor.address, toWei("10000000"));
     })
-    it("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
-      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, ONE_DAY, beneficiaries, shares);
-      await expect(rewardDistributor.connect(operator).rewardUsers([tokenId], [rewardAmount])).to.not.be.reverted;
+
+    it.only("Should lend a nft and shares value between beneficiaries in airdroping distribution", async function () {
+      const blockNumBefore = await ethers.provider.getBlockNumber();
+      const blockBefore = await ethers.provider.getBlock(blockNumBefore);
+      const timestampBefore = blockBefore.timestamp;
+      await nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, timestampBefore + ONE_DAY, beneficiaries, shares);
+      await rewardDistributor.connect(operator).rewardUsers([tokenId], [rewardAmount])
     });
   });
 
