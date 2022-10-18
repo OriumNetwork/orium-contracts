@@ -7,12 +7,12 @@ import { IERC4907ProfitShare } from "./interfaces/IERC4907ProfitShare.sol";
 contract ERC4907ProfitShare is ERC4907 {
     struct ProfitShareInfo {
         address[] beneficiaries;
-        uint256[] split;
+        uint256[] shares;
     }
 
-    mapping(uint256 => ProfitShareInfo) internal _profits;
+    mapping(uint256 => ProfitShareInfo) internal _profitShareConfigs;
 
-    event UpdateProfitShare(uint256 indexed tokenId, address[] beneficiaries, uint256[] split);
+    event UpdateProfitShare(uint256 indexed tokenId, address[] beneficiaries, uint256[] shares);
 
     constructor(string memory name_, string memory symbol_) ERC4907(name_, symbol_) {}
 
@@ -33,49 +33,45 @@ contract ERC4907ProfitShare is ERC4907 {
         address user,
         uint64 expires,
         address[] memory beneficiaries,
-        uint256[] memory split
+        uint256[] memory shares
     ) public virtual {
-        require(beneficiaries.length == split.length, "ERC4907ProfitShare: beneficiaries and split must be the same length");
-        require(_isValidSplit(split), "ERC4907ProfitShare: split must be valid");
+        require(beneficiaries.length == shares.length, "ERC4907ProfitShare: beneficiaries and shares must be the same length");
+        require(_isValidShares(shares), "ERC4907ProfitShare: shares must be valid");
         super.setUser(tokenId, user, expires);
-        _profits[tokenId].beneficiaries = beneficiaries;
-        _profits[tokenId].split = split;
-        emit UpdateProfitShare(tokenId, beneficiaries, split);
+        _profitShareConfigs[tokenId].beneficiaries = beneficiaries;
+        _profitShareConfigs[tokenId].shares = shares;
+        emit UpdateProfitShare(tokenId, beneficiaries, shares);
     }
 
-    function _isValidSplit(uint256[] memory split) internal pure returns (bool) {
+    function _isValidShares(uint256[] memory shares) internal pure returns (bool) {
         uint256 sum = 0;
-        for (uint256 i = 0; i < split.length; i++) {
-            sum += split[i];
+        for (uint256 i = 0; i < shares.length; i++) {
+            sum += shares[i];
         }
         return sum == 100 ether;
     }
 
-    function beneficiariesOf(uint256 tokenId) public view virtual returns (address[] memory) {
+    function profitShareOf(uint256 tokenId) public view returns (ProfitShareInfo memory) {
         uint256 lastExpires = _users[tokenId].expires;
-        if (lastExpires < block.timestamp) {
-            return new address[](0);
+
+        if (lastExpires > block.timestamp) {
+            return _profitShareConfigs[tokenId];
         } else {
-            return _profits[tokenId].beneficiaries;
+            address[] memory beneficiaries = new address[](1);
+            uint256[] memory shares = new uint256[](1);
+            beneficiaries[0] = ownerOf(tokenId);
+            shares[0] = 100 ether;
+            return ProfitShareInfo({ beneficiaries: beneficiaries, shares: shares });
         }
     }
 
-    function splitOf(uint256 tokenId) public view virtual returns (uint256[] memory) {
-        uint256 lastExpires = _users[tokenId].expires;
-        if (lastExpires < block.timestamp) {
-            return new uint256[](0);
-        } else {
-            return _profits[tokenId].split;
+    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory _amounts, address[] memory _beneficiaries) {
+        uint256[] memory shares = profitShareOf(tokenId).shares;
+        _beneficiaries = profitShareOf(tokenId).beneficiaries;
+        _amounts = new uint256[](_beneficiaries.length);
+        for (uint256 i = 0; i < shares.length; i++) {
+            _amounts[i] = (amount * shares[i]) / 100 ether;
         }
-    }
-
-    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory) {
-        uint256[] memory split = splitOf(tokenId);
-        uint256[] memory result = new uint256[](split.length);
-        for (uint256 i = 0; i < split.length; i++) {
-            result[i] = (amount * split[i]) / 100 ether;
-        }
-        return result;
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
@@ -94,9 +90,5 @@ contract ERC4907ProfitShare is ERC4907 {
         }
 
         super._beforeTokenTransfer(from, to, tokenId);
-    }
-
-    function mint(address to, uint256 tokenId) public virtual {
-        super._mint(to, tokenId);
     }
 }
