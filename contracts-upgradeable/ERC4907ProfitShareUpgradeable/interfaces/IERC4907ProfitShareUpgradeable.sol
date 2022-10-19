@@ -37,5 +37,5 @@ interface IERC4907ProfitShareUpgradeable is IERC4907Upgradeable {
     /// @notice Get the amount of tokens to distribute to each beneficiary
     /// @param tokenId The tokenId of the NFT
     /// @param amount The amount of tokens to be splitted
-    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory);
+    function splitTokensFor(uint256 tokenId, uint256 amount) external view returns (uint256[] memory, address[] memory);
 }

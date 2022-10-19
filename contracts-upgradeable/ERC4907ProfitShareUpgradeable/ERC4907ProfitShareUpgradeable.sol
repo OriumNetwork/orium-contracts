@@ -7,10 +7,6 @@ import { IERC4907Upgradeable } from "./interfaces/IERC4907Upgradeable.sol";
 import { IERC165Upgradeable } from "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
 
 contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShareUpgradeable {
-    struct ProfitShareInfo {
-        address[] beneficiaries;
-        uint256[] shares;
-    }
 
     mapping(uint256 => ProfitShareInfo) internal _profitShareConfigs;
 
@@ -20,7 +16,7 @@ contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShar
         uint256 tokenId,
         address user,
         uint64 expires
-    ) public virtual override {
+    ) public virtual override(ERC4907Upgradeable, IERC4907Upgradeable) {
         address[] memory beneficiaries_ = new address[](1);
         uint256[] memory split_ = new uint256[](1);
         beneficiaries_[0] = user;
@@ -74,8 +70,8 @@ contract ERC4907ProfitShareUpgradeable is ERC4907Upgradeable, IERC4907ProfitShar
         }
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IERC4907ProfitShare).interfaceId || super.supportsInterface(interfaceId);
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC4907Upgradeable, IERC165Upgradeable) returns (bool) {
+        return interfaceId == type(IERC4907ProfitShareUpgradeable).interfaceId || super.supportsInterface(interfaceId);
     }
 
     function _beforeTokenTransfer(
