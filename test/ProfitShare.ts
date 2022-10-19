@@ -1,5 +1,5 @@
 import { ethers } from "hardhat";
-import { BigNumber, Contract, ContractFactory } from "ethers";
+import { Contract, ContractFactory } from "ethers";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 
@@ -102,6 +102,23 @@ describe("ERC4907ProfitShare", function () {
     it("Should check if supports ProfitShare interface", async function () {
       const correctInterfaceId = Nft.interface.getSighash("supportsInterface(bytes4)")
       expect(await nft.supportsInterface(correctInterfaceId)).to.be.true;
+    })
+    it("Should end the previous profit share correctly", async function () {
+      const timestamp = (await ethers.provider.getBlock("latest")).timestamp;
+      const ONE_DAY = 86400;
+      await expect(nft.connect(nftOwner).setUserProfitShare(tokenId, nftUser.address, timestamp + ONE_DAY, beneficiaries, shares))
+        .to.emit(nft, "UpdateProfitShare")
+        .withArgs(tokenId, beneficiaries, shares)
+      const profitShareInfo = await nft.profitShareOf(tokenId)
+      expect(profitShareInfo.beneficiaries).to.be.deep.equal(beneficiaries);
+      expect(profitShareInfo.shares).to.be.deep.equal(shares);
+
+      await ethers.provider.send("evm_increaseTime", [ONE_DAY]);
+      await ethers.provider.send("evm_mine", []);
+
+      const profitShareInfo2 = await nft.profitShareOf(tokenId)
+      expect(profitShareInfo2.beneficiaries).to.be.deep.equal([nftOwner.address]);
+      expect(profitShareInfo2.shares).to.be.deep.equal([toWei("100")]);
     })
   });
 
