@@ -10,7 +10,7 @@ interface IERC4907ProfitShare is IERC4907 {
     }
 
     /// @notice Emitted when the `profitShare` of an NFT is changed
-    event UpdateUser(uint256 indexed tokenId, address indexed user, uint64 expires, address[] beneficiaries, uint256[] shares);
+    event UpdateProfitShare(uint256 indexed tokenId, address[] beneficiaries, uint256[] shares);
 
     /// @notice set the user and expires of an NFT
     /// @dev The zero address indicates there is no user
