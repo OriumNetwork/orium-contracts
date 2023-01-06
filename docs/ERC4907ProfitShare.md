@@ -21,7 +21,7 @@ Profit-Share compliant contract must implement the ERC-4907 interface.
 ```solidity
 pragma solidity ^0.8.9;
 
-import { IERC4907 } from "../interfaces/IERC4907.sol";
+import { IERC4907 } from "../contracts/interfaces/IERC4907.sol";
 
 interface IERC4907ProfitShare is IERC4907 {
   struct ProfitShareInfo {

@@ -10,7 +10,9 @@
 Orium Contracts is a Hardhat Solidity project that demonstrates how game developers can integrate with Orium 
 Network. Orium supports multiple rental protocols, select one of the protocols below in order to get started:
 
-* [ERC-4097 Profit-Share](./docs/ERC4907ProfitShare.md): Extension of ERC-4907 that expands the standard's scope to include profit-share rentals. 
+* [ERC-4907](./docs/ERC4907.md): An Ethereum standard that enables NFT owners to assign another address that can use a specific NFT.
+* [ERC-4097 Profit-Share](./docs/ERC4907ProfitShare.md): Extension of ERC-4907 that expands the standard's scope to 
+include profit-share rentals. 
 
 ## Getting Started
 
