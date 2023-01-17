@@ -2,7 +2,7 @@
 pragma solidity ^0.8.9;
 
 import { ERC721Upgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-import { IERC4907Upgradeable } from "../interfaces/IERC4907Upgradeable.sol";
+import { IERC4907Upgradeable } from "./interfaces/IERC4907Upgradeable.sol";
 import { IERC165Upgradeable } from "@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol";
 
 contract ERC4907Upgradeable is ERC721Upgradeable, IERC4907Upgradeable {
