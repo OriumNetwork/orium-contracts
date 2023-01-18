@@ -28,5 +28,17 @@
     "ts-node": "^10.9.1",
     "typechain": "^8.1.0",
     "typescript": "^4.8.4"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oriumnetwork/orium-contracts.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/oriumnetwork/orium-contracts/issues"
+  },
+  "homepage": "https://github.com/oriumnetwork/orium-contracts#readme"
 }
